@@ -13,8 +13,7 @@ K2 = input(:, output == 2);
 K3 = input(:, output == 3);
 
 %figure('Name', 'Z1F1', 'NumberTitle', 'off')
-figure
-hold all
+figure, hold all
 plot(K1(1, :), K1(2, :), 'o')
 plot(K2(1, :), K2(2, :), 'x')
 plot(K3(1, :), K3(2, :), '*')
@@ -52,7 +51,7 @@ netB = patternnet([6 4]);
 
 netB.divideFcn = '';
 
-netB.trainParam.epochs = 1000;
+netB.trainParam.epochs = 2000;
 netB.trainParam.goal = 1e-3;
 netB.trainParam.min_grad = 1e-3;
 
@@ -72,12 +71,12 @@ netU = patternnet([1 1]);
 
 netU.divideFcn = '';
 
-netU.trainParam.epochs = 1000;
+netU.trainParam.epochs = 2000;
 netU.trainParam.goal = 1e-3;
 netU.trainParam.min_grad = 1e-3;
 
-netU.layers{1}.transferFcn = 'poslin';
-netU.layers{2}.transferFcn = 'poslin';
+netU.layers{1}.transferFcn = 'tansig';
+netU.layers{2}.transferFcn = 'tansig';
 netU.layers{3}.transferFcn = 'softmax';
 
 netU = train(netU, input_training, output_training);
@@ -88,17 +87,18 @@ figure, plotconfusion(output_test, netU(input_test)), title('Matrica konfuzije n
 %% Preobučavajuća neuralna mreža
 rng(200);
 
-netO = patternnet([100 100 100 100 100]);
+netO = patternnet([15 40 15]);
 
 netO.divideFcn = '';
 
-netO.trainParam.epochs = 100;
+netO.trainParam.epochs = 2000;
 netO.trainParam.goal = 1e-3;
 netO.trainParam.min_grad = 1e-3;
 
-netO.layers{1}.transferFcn = 'poslin';
-netO.layers{2}.transferFcn = 'poslin';
-netO.layers{3}.transferFcn = 'softmax';
+netO.layers{1}.transferFcn = 'tansig';
+netO.layers{2}.transferFcn = 'tansig';
+netO.layers{3}.transferFcn = 'tansig';
+netO.layers{4}.transferFcn = 'softmax';
 
 netO = train(netO, input_training, output_training);
 
@@ -134,14 +134,15 @@ for netIndex = 1:3
     K2db = inputDB(:, class == 2);
     K3db = inputDB(:, class == 3);
 
-    figure, hold all 
-    plot(K1db(1, :), K1db(2, :), 'b.')
-    plot(K2db(1, :), K2db(2, :), 'r.')
-    plot(K3db(1, :), K3db(2, :), 'w.')
-    plot(K1(:, 1), K1(:, 2), 'bo')
-    plot(K2(:, 1), K2(:, 2), 'r*')
-    plot(K3(:, 1), K3(:, 2), 'wd')
-    legend('K1', 'K2', 'K3')
-    xlabel('X osa'), ylabel('Y osa')
+    figure, hold all
+    plot(K1db(1, :), K1db(2, :), '.')
+    plot(K2db(1, :), K2db(2, :), '.')
+    plot(K3db(1, :), K3db(2, :), '.')
+    plot(K1(1, :), K1(2, :), 'ro')
+    plot(K2(1, :), K2(2, :), 'yx')
+    plot(K3(1, :), K3(2, :), 'b*')
+    legend('K1', 'K2', 'K3','K1', 'K2', 'K3')
+    xlabel('X osa')
+    ylabel('Y osa')
     title(titles(netIndex))
 end
