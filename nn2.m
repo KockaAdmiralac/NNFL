@@ -32,47 +32,67 @@ outputRnB = outputOH(:, output == 3);
 
 NPop = length(Pop);
 NPopT = floor(0.7*NPop);
+NPopV = NPopT + floor(0.15*NPop);
 
 NRap = length(Rap);
 NRapT = floor(0.7*NRap);
+NRapV = NRapT + floor(0.15*NRap);
 
 NRnB = length(RnB);
 NRnBT = floor(0.7*NRnB);
-
-NT = NPopT + NRapT + NRnBT;
+NRnBV = NRnBT + floor(0.15*NRnB);
 
 inputPopTraining = Pop(:, 1 : NPopT);
-inputPopTest = Pop(:, NPopT + 1 : NPop);
+inputPopValidation = Pop(:, NPopT + 1 : NPopV);
+inputPopTest = Pop(:, NPopV + 1 : NPop);
 outputPopTraining = outputPop(:, 1 : NPopT);
-outputPopTest = outputPop(:, NPopT + 1 : NPop);
-
-inputRapTraining = Rap(:, 1 : NRapT);
-inputRapTest = Rap(:, NRapT + 1 : NRap);
-outputRapTraining = outputRap(:, 1 : NRapT);
-outputRapTest = outputRap(:, NRapT + 1 : NRap);
+outputPopValidation = outputPop(:, NPopT + 1 : NPopV);
+outputPopTest = outputPop(:, NPopV + 1 : NPop);
 
 inputRnBTraining = RnB(:, 1 : NRnBT);
-inputRnBTest = RnB(:, NRnBT + 1 : NRnB);
+inputRnBValidation = RnB(:, NRnBT + 1 : NRnBV);
+inputRnBTest = RnB(:, NRnBV + 1 : NRnB);
 outputRnBTraining = outputRnB(:, 1 : NRnBT);
-outputRnBTest = outputRnB(:, NRnBT + 1 : NRnB);
+outputRnBValidation = outputRnB(:, NRnBT + 1 : NRnBV);
+outputRnBTest = outputRnB(:, NRnBV + 1 : NRnB);
+
+inputRapTraining = Rap(:, 1 : NRapT);
+inputRapValidation = Rap(:, NRapT + 1 : NRapV);
+inputRapTest = Rap(:, NRapV + 1 : NRap);
+outputRapTraining = outputRap(:, 1 : NRapT);
+outputRapValidation = outputRap(:, NRapT + 1 : NRapV);
+outputRapTest = outputRap(:, NRapV + 1 : NRap);
 
 
 inputTraining = [inputPopTraining, inputRapTraining, inputRnBTraining];
+inputValidation = [inputPopValidation, inputRapValidation, inputRnBValidation];
 inputTest = [inputPopTest, inputRapTest, inputRnBTest];
 outputTraining = [outputPopTraining, outputRapTraining, outputRnBTraining];
+outputValidation = [outputPopValidation, outputRapValidation, outputRnBValidation];
 outputTest = [outputPopTest, outputRapTest, outputRnBTest];
 
 ind = randperm(length(outputTraining));
 inputTraining = inputTraining(:, ind);
 outputTraining = outputTraining(:, ind);
 
+ind = randperm(length(outputValidation));
+inputValidation = inputValidation(:, ind);
+outputValidation = outputValidation(:, ind);
+
+inputAll = [inputTraining, inputValidation];
+outputAll = [outputTraining, outputValidation];
+
 %% Unakrsna validacija
 
 Abest = 0;
+F1best = 0;
 architecture = {[3, 5], [12, 6], [12,8,4], [20,10]};
 regularization = [0, 0.1, 0.5, 0.9];
 learningRates = [0.5, 0.05, 0.005];
 %weights =  [1,2,5,10];
+precision = @(confusionMat) diag(confusionMat)./sum(confusionMat,2);
+recall = @(confusionMat) diag(confusionMat)./sum(confusionMat,1)';
+f1Scores = @(confusionMat) 2*(precision(confusionMat).*recall(confusionMat))./(precision(confusionMat)+recall(confusionMat));
 
 for r = regularization
     for lr = learningRates
@@ -89,27 +109,30 @@ for r = regularization
             net.trainParam.showWindow = false;
            
             net.divideFcn = 'divideind';
-            net.divideParam.trainInd = 1 : floor(0.7 * length(inputTraining));
-            net.divideParam.valInd = floor(0.7 * length(inputTraining)) + 1 : floor(0.85 * length(inputTraining));
-            net.divideParam.testInd = floor(0.85 * length(inputTraining)) + 1 : length(inputTraining);
+            net.divideParam.trainInd = 1 : length(inputTraining);
+            net.divideParam.valInd = length(inputTraining) + 1 : (length(inputTraining) + length(inputValidation));
+            net.divideParam.testInd = [];%(length(inputTraining) + length(inputValidation)) + 1 : length(inputAll);
             
             %weight = (outputTraining(1,:))*(w-1)+1;   
 
             %[net, info] = train(net, inputTraining, outputTraining,[],[],weight);
-            [net, info] = train(net, inputTraining, outputTraining);
+            [net, info] = train(net, inputAll, outputAll);
 
             pred = sim(net, inputTest);
             pred = round(pred);
 
             [~, cm] = confusion(outputTest, pred);
             A = 100*trace(cm)/sum(sum(cm));
+            F1 = mean(f1Scores(cm));
             
             disp(['Arh = ' num2str(architecture{arh})])
             disp(['R = ' num2str(r) ', ACC = ' num2str(A) ])
             disp(['LR = ' num2str(lr) ', epoch = ' num2str(info.best_epoch)])
+            disp(['F1 = ', num2str(F1)])
 
-            if A > Abest
+            if F1 > F1best
                 Abest = A;
+                F1best = F1;
                 %w_best = w;
                 reg_best = r;
                 lr_best = lr;
@@ -134,7 +157,6 @@ pred = round(pred);
 figure, plotconfusion(outputTest, pred), title('Matrica konfuzije na test skupu mreže'), xlabel('Očekivana klasa'), ylabel('Dobijena klasa')
 
 [~, cm] = confusion(outputTest, pred);
-precision = @(confusionMat) diag(confusionMat)./sum(confusionMat,2);
-recall = @(confusionMat) diag(confusionMat)./sum(confusionMat,1)';
 precision(cm)
 recall(cm)
+f1Scores(cm)
