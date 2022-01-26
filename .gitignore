@@ -29,3 +29,14 @@ codegen/
 
 # Octave session info
 octave-workspace
+
+# TeX
+svg-inkscape
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+nmproj.pdf
+
+
