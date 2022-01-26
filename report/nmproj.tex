@@ -1,5 +1,4 @@
-\documentclass[10pt,a4paper,titlepage,serbianc]{article}
-\usepackage[T2A]{fontenc}
+\documentclass[10pt,a4paper,titlepage,croatian]{article}
 \usepackage[a4paper]{geometry}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -7,12 +6,14 @@
 \usepackage{graphicx} 
 \usepackage[utf8x]{inputenc}
 \usepackage{listings}
-\usepackage[serbianc]{babel}
+\usepackage[croatian]{babel}
 \usepackage{framed}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage{subfig}
 \usepackage{caption}
 \usepackage{bookmark}
+\usepackage{svg}
 %\usepackage{showkeys}
 \hypersetup{pdfstartview={XYZ null null 1.00}}
 \graphicspath{ {./grafici/} }
@@ -22,18 +23,18 @@
 \lstset{language=Python,breaklines=true} 
 \begin{titlepage}
 \begin{center}
-{\Large Неуралне мреже \par}
+{\Large Neuralne mreže \par}
 \begin{huge}
-\sc\textbf{Први пројектни задатак}
+\sc\textbf{Prvi projektni zadatak}
 \par
 \end{huge}
 \vspace{1cm}
 \begin{large}
-Алекса Марковић, 2019/0248 \\
-Лука Симић, 2019/0368
+Aleksa Marković, 2019/0248 \\
+Luka Simić, 2019/0368
 \\
 \vspace{1cm}
-Параметри:\\
+Parametri:\\
 \vspace{0.5cm}
 $D = M = S = 2$
 \end{large}
@@ -41,5 +42,80 @@ $D = M = S = 2$
 
 \end{titlepage}
 
+\section{Prvi zadatak}
+Nakon učitavanja podataka podelili smo ih na klase na osnovu vrednosti poslednje kolone, i vizuelizovali naš set podataka po klasama (rezultati na slici \ref{Vis1Klase}).
+\begin{figure}
+    \centering
+    \includesvg[scale=0.75]{Z1_Data}
+    \caption{Vizuelizacija podataka po klasama u prvom zadatku.}
+    \label{Vis1Klase}
+\end{figure}
+Primenili smo One-Hot Encoding tehniku nad našim izlaznim skupom podataka.
+
+Podelili smo skupove tako da nam je 70\% trening podataka a 30\% test podataka. Podela na ova dva skupa je bitna zbog toga što želimo da se naša mreža trenira na odvojenom skupu podataka od onoga na kojem proveravamo koliko je dobra. Ukoliko bismo je trenirali na istom skupu na kojem je testiramo ne bismo mogli da znamo koliko naša mreža dobro generalizuje, jer nam rezultati na trening skupu samo kažu koliko je naučila iz onoga što joj je bilo dato, a ne i kako bi se snašla nad nekim novim podacima (što je ono za šta tu neuralnu mrežu i hoćemo da koristimo). Pošto je jednak broj odbiraka svih klasa, prvo smo "promešali" naš skup podataka, tako da klase ne budu raspoređene redom nego ravnomernije, a zatim uzeli prvih 70\% podataka za trening i ostatak za test skup.
+
+Arhitekture tri neuralne mreže i transfer funkcije su prikazane u tabeli \ref{Arhitektura1}.
+\begin{figure}
+    \begin{tabular}{ |c|c|c| }
+        \hline
+        & Arhitektura & Transfer funkcije \\
+        \hline
+        Neprilagođena & Dva skrivena sloja od jednog neurona & \texttt{tansig}, \texttt{tansig}, \texttt{softmax} \\
+        \hline
+        Optimalna     & Dva skrivena sloja od 6 i 4 neurona  & \texttt{poslin}, \texttt{poslin}, \texttt{softmax} \\
+        \hline
+        Preobučena    & Tri skrivena sloja od 15, 40 i 50 neurona & \texttt{tansig}, \texttt{tansig}, \texttt{tansig}, \texttt{softmax} \\
+        \hline
+    \end{tabular}
+    \caption{Arhitekture i transfer funkcije mreža treniranih u prvom zadatku.}
+    \label{Arhitektura1}
+\end{figure}
+Svaku neuralnu mrežu smo istrenirali sa 2000 epoha, isključenim zaštitama protiv preobučavanja, maksimalnom dozvoljenom greškom od $10^{-3}$ i minimalnim dozvoljenim gradijentom od $10^{-3}$ Rezultati se mogu videti na slikama \ref{CM1Underfit} i \ref{GO1Underfit} (neprilagođena), \ref{CM1Optimal} i \ref{GO1Optimal} (optimalna), i \ref{CM1Overfit} i \ref{GO1Overfit} (preobučena).
+\begin{figure}
+    \centering
+    \includesvg[width=0.75\textwidth]{Z1_CM_Underfit_Training}
+    \includesvg[width=0.75\textwidth]{Z1_CM_Underfit_Test}
+    \caption{Matrice konfuzije na trening i test skupu neprilagođene mreže u prvom zadatku.}
+    \label{CM1Underfit}
+\end{figure}
+\begin{figure}
+    \centering
+    \includesvg{Z1_GO_Underfit}
+    \caption{Granica odlučivanja neprilagođene mreže u prvom zadatku.}
+    \label{GO1Underfit}
+\end{figure}
+\begin{figure}
+    \centering
+    \includesvg[width=0.75\textwidth]{Z1_CM_Optimal_Training}
+    \includesvg[width=0.75\textwidth]{Z1_CM_Optimal_Test}
+    \caption{Matrice konfuzije na trening i test skupu optimalne mreže u prvom zadatku.}
+    \label{CM1Optimal}
+\end{figure}
+\begin{figure}
+    \centering
+    \includesvg{Z1_GO_Optimal}
+    \caption{Granica odlučivanja optimalne mreže u prvom zadatku.}
+    \label{GO1Optimal}
+\end{figure}
+\begin{figure}
+    \centering
+    \includesvg[width=0.75\textwidth]{Z1_CM_Overfit_Training}
+    \includesvg[width=0.75\textwidth]{Z1_CM_Overfit_Test}
+    \caption{Matrice konfuzije na trening i test skupu preobučene mreže u prvom zadatku.}
+    \label{CM1Overfit}
+\end{figure}
+\begin{figure}
+    \centering
+    \includesvg{Z1_GO_Overfit}
+    \caption{Granica odlučivanja preobučene mreže u prvom zadatku.}
+    \label{GO1Overfit}
+\end{figure}
+
+Možemo videti da neprilagođena mreža nema nimalo dobre rezultate, što je očekivano, jer nije mogla da se prilagodi podacima uopšte. Preobučena mreža, sa druge strane, se previše prilagodila (trening) podacima, i možemo da vidimo da i najmanje varijacije u trening skupu podataka uzrokuju značajne promene granica odlučivanja. Takođe možemo da vidimo značajne razlike između rezultata na trening i test skupu, jer je naša mreža naučila dobro podatke iz trening skupa ali nije naučila da generalizuje. Optimalna mreža ima tačnost od 95.3\% na test skupu, što je najbolja tačnost na test skupu od sve tri mreže. Takođe možemo primetiti da preobučena mreža ima tačnost od 99.9\% na trening skupu, što isto ukazuje na njenu preobučenost.
+
+\section{Zadatak 2}
+Naš set podataka je \textit{Genres}. Zadatak je da kategorišemo muziku po žanrovima ako su date neke karakteristike muzike koja se kategoriše, a izlazne kategorije su pop, rep i RnB. Podelu po klasama možete videti na slici \ref{Podela2}. Može se primetiti da odbiraka Rap klase ima najmanjex``'', jedno deset puta manje od odbiraka ostalih klasa.
+
+Opet radimo podelu tako da je 70\% podataka za trening i 30\% za test, a validacioni skup smo odlučili da nam nije potreban. Zbog toga što nam ovaj put nema isti broj podataka u svakom skupu
 
 \end{document}
