@@ -44,7 +44,7 @@ $D = M = S = 2$
 
 \section{Prvi zadatak}
 Nakon učitavanja podataka podelili smo ih na klase na osnovu vrednosti poslednje kolone, i vizuelizovali naš set podataka po klasama (rezultati na slici \ref{Vis1Klase}).
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includesvg[scale=0.75]{Z1_Data}
     \caption{Vizuelizacija podataka po klasama u prvom zadatku.}
@@ -55,7 +55,7 @@ Primenili smo One-Hot Encoding tehniku nad našim izlaznim skupom podataka.
 Podelili smo skupove tako da nam je 70\% trening podataka a 30\% test podataka. Podela na ova dva skupa je bitna zbog toga što želimo da se naša mreža trenira na odvojenom skupu podataka od onoga na kojem proveravamo koliko je dobra. Ukoliko bismo je trenirali na istom skupu na kojem je testiramo ne bismo mogli da znamo koliko naša mreža dobro generalizuje, jer nam rezultati na trening skupu samo kažu koliko je naučila iz onoga što joj je bilo dato, a ne i kako bi se snašla nad nekim novim podacima (što je ono za šta tu neuralnu mrežu i hoćemo da koristimo). Pošto je jednak broj odbiraka svih klasa, prvo smo "promešali" naš skup podataka, tako da klase ne budu raspoređene redom nego ravnomernije, a zatim uzeli prvih 70\% podataka za trening i ostatak za test skup.
 
 Arhitekture tri neuralne mreže i transfer funkcije su prikazane u tabeli \ref{Arhitektura1}.
-\begin{figure}
+\begin{figure}[H]
     \begin{tabular}{ |c|c|c| }
         \hline
         & Arhitektura & Transfer funkcije \\
@@ -70,52 +70,126 @@ Arhitekture tri neuralne mreže i transfer funkcije su prikazane u tabeli \ref{A
     \caption{Arhitekture i transfer funkcije mreža treniranih u prvom zadatku.}
     \label{Arhitektura1}
 \end{figure}
-Svaku neuralnu mrežu smo istrenirali sa 2000 epoha, isključenim zaštitama protiv preobučavanja, maksimalnom dozvoljenom greškom od $10^{-3}$ i minimalnim dozvoljenim gradijentom od $10^{-3}$ Rezultati se mogu videti na slikama \ref{CM1Underfit} i \ref{GO1Underfit} (neprilagođena), \ref{CM1Optimal} i \ref{GO1Optimal} (optimalna), i \ref{CM1Overfit} i \ref{GO1Overfit} (preobučena).
-\begin{figure}
+Svaku neuralnu mrežu smo istrenirali sa 2000 epoha, isključenim zaštitama protiv preobučavanja, maksimalnom dozvoljenom greškom od $10^{-3}$ i minimalnim dozvoljenim gradijentom od $10^{-3}$. Rezultati se mogu videti na slikama \ref{CM1Underfit} i \ref{GO1Underfit} (neprilagođena), \ref{CM1Optimal} i \ref{GO1Optimal} (optimalna), i \ref{CM1Overfit} i \ref{GO1Overfit} (preobučena).
+\begin{figure}[H]
     \centering
     \includesvg[width=0.75\textwidth]{Z1_CM_Underfit_Training}
     \includesvg[width=0.75\textwidth]{Z1_CM_Underfit_Test}
     \caption{Matrice konfuzije na trening i test skupu neprilagođene mreže u prvom zadatku.}
     \label{CM1Underfit}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includesvg{Z1_GO_Underfit}
+    \includesvg[width=0.8\textwidth]{Z1_GO_Underfit}
     \caption{Granica odlučivanja neprilagođene mreže u prvom zadatku.}
     \label{GO1Underfit}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includesvg[width=0.75\textwidth]{Z1_CM_Optimal_Training}
     \includesvg[width=0.75\textwidth]{Z1_CM_Optimal_Test}
     \caption{Matrice konfuzije na trening i test skupu optimalne mreže u prvom zadatku.}
     \label{CM1Optimal}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includesvg{Z1_GO_Optimal}
+    \includesvg[width=0.8\textwidth]{Z1_GO_Optimal}
     \caption{Granica odlučivanja optimalne mreže u prvom zadatku.}
     \label{GO1Optimal}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includesvg[width=0.75\textwidth]{Z1_CM_Overfit_Training}
     \includesvg[width=0.75\textwidth]{Z1_CM_Overfit_Test}
     \caption{Matrice konfuzije na trening i test skupu preobučene mreže u prvom zadatku.}
     \label{CM1Overfit}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includesvg{Z1_GO_Overfit}
+    \includesvg[width=0.8\textwidth]{Z1_GO_Overfit}
     \caption{Granica odlučivanja preobučene mreže u prvom zadatku.}
     \label{GO1Overfit}
 \end{figure}
 
 Možemo videti da neprilagođena mreža nema nimalo dobre rezultate, što je očekivano, jer nije mogla da se prilagodi podacima uopšte. Preobučena mreža, sa druge strane, se previše prilagodila (trening) podacima, i možemo da vidimo da i najmanje varijacije u trening skupu podataka uzrokuju značajne promene granica odlučivanja. Takođe možemo da vidimo značajne razlike između rezultata na trening i test skupu, jer je naša mreža naučila dobro podatke iz trening skupa ali nije naučila da generalizuje. Optimalna mreža ima tačnost od 95.3\% na test skupu, što je najbolja tačnost na test skupu od sve tri mreže. Takođe možemo primetiti da preobučena mreža ima tačnost od 99.9\% na trening skupu, što isto ukazuje na njenu preobučenost.
 
-\section{Zadatak 2}
-Naš set podataka je \textit{Genres}. Zadatak je da kategorišemo muziku po žanrovima ako su date neke karakteristike muzike koja se kategoriše, a izlazne kategorije su pop, rep i RnB. Podelu po klasama možete videti na slici \ref{Podela2}. Može se primetiti da odbiraka Rap klase ima najmanjex``'', jedno deset puta manje od odbiraka ostalih klasa.
+\section{Drugi zadatak}
+Naš set podataka je \textit{Genres}. Zadatak je da kategorišemo muziku po žanrovima ako su date neke karakteristike muzike koja se kategoriše, a izlazne kategorije su pop, rep i RnB. Podelu po klasama možete videti na slici \ref{Podela2}. Može se primetiti da odbiraka Pop klase ima najmanje, jedno četiri puta manje od odbiraka ostalih klasa.
 
-Opet radimo podelu tako da je 70\% podataka za trening i 30\% za test, a validacioni skup smo odlučili da nam nije potreban. Zbog toga što nam ovaj put nema isti broj podataka u svakom skupu
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.75\textwidth]{Z2_Dataset_Hist}
+    \caption{Podela podataka po klasama u drugom zadatku za skup podataka \textit{Genres}.}
+    \label{Podela2}
+\end{figure}
+
+Radimo podelu tako da je 70\% podataka za trening, 15\% za validaciju i 15\% za test. Zbog toga što nam ovaj put nije isti broj podataka u svakom skupu, prvo smo podelili skupove podataka po klasama, a zatim uzimali procente podataka iz tih skupova kako bi raspodela bila što ravnomernija po klasama.
+
+Za našu varijantu, dati hiperparametri su arhitektura mreže, koeficijent regularizacije, težine klasa i
+konstanta obučavanja, dok smo mi odlučili da koristimo samo arhitekturu, koeficijent regularizacije i konstantu obučavanja u našem projektu.
+\begin{itemize}
+    \item Arhitektura mreže određuje koliko ćemo imati skrivenih slojeva sa koliko neurona, i ovo je jedan od najbitnijih hiperparametara kako smo mogli da vidimo u prethodnom zadatku. U našem projektu isprobavamo sledeće arhitekture:
+    \begin{itemize}
+        \item \texttt{[3, 5]}
+        \item \texttt{[12, 6]}
+        \item \texttt{[12, 8, 4]}
+        \item \texttt{[20, 10]}
+    \end{itemize}
+    \item Koeficijent regularizacije nam kaže koliki će uticaj imati regularizacija na našu jednačinu greške. U našem projektu isprobavamo koeficijente 0 (bez regularizacije), 0.1, 0.5 i 0.9.
+    \item Konstanta obučavanja pretežno ima uticaj na to koliko će se naša mreža brzo obučavati, ali može da ima nekog uticaja i na performanse. U našem projektu isprobavamo konstante 0.5, 0.05 i 0.005.
+\end{itemize}
+
+Jedna mera performanse može da bude \textit{micro-F1 score}. Pošto smo regularni \textit{F1 score} definisali samo nad problemom klasifikacije dve klase, za problem klasifikacije više klasa postoji više načina za računanje \textit{F1 score}.
+
+Počinjemo od standardnih jednačina \eqref{Precision}, \eqref{Recall} i \eqref{F1} za \textit{precision}, \textit{recall} i \textit{F1 score}.
+\begin{equation}
+    precision = \frac{T_p}{T_p + F_p}
+    \label{Precision}
+\end{equation}
+\begin{equation}
+    recall = \frac{T_p}{T_p + F_n}
+    \label{Recall}
+\end{equation}
+\begin{equation}
+    F1 = 2 \cdot \frac{precision \cdot recall}{precision + recall}
+    \label{F1}
+\end{equation}
+Kada radimo sa \textit{micro-F1 score}, uzimamo da je broj \textit{false positives} $F_p$ isti kao broj ukupno loše klasifikovanih odbiraka, jer je to zbir lažnih pozitiva za sve klase. Analogno tome je broj \textit{false negatives} $F_n$ isti kao broj ukupno loše klasifikovanih odbiraka, pa dobijamo da je formula za \textit{micro-precision} ista kao formula za \textit{micro-recall}. Iz formule \eqref{F1} takođe vidimo da je \textit{micro-F1 score} jednak našim \textit{micro-precision} i \textit{micro-recall}. Zbog ovoga se naša metrika, \textit{micro-F1 score} računa kao količnik zbira brojeva na glavnoj dijagonali konfuzione matrice i zbira svih brojeva u matrici.
+
+Takođe je moguće računati \textit{precision} i \textit{recall} za svaku klasu odvojeno. U slučaju \textit{precision}, $F_p$ je jednako broju odbiraka pogrešno previđenih kao naša klasa, dok je u slučaju \textit{recall} $F_n$ jednako broju odbiraka pogrešno previđenih kao neka druga klasa iako je zapravo naša. Na taj način za sve klase možemo da izračunamo \textit{precision}, \textit{recall} i \textit{F1 score} odvojeno, a zatim dobijemo \textit{macro-F1} izračunavanje srednjih vrednosti ovih \textit{F1 score}.
+
+Zbog toga što klase nisu ravnomerno raspoređene, u projektu smo odabrali da koristimo \textit{macro-F1 score}. U \textit{macro-F1 score} klasa Pop ima više uticaja na to da se izabere kao optimalna mreža jedna mreža koja balansira između dobre klasifikacije te klase i ostale dve klase, za razliku od \textit{micro-F1 score}, koji je samo drugačiji način da se izrazi \textit{accuracy}.
+
+Dobili smo da je optimalan koeficijent regularizacije 0 (bez regularizacije), optimalna konstanta obučavanja 0.005 i optimalna arhitektura \texttt{[3, 5]}. Kriva performanse optimalne mreže može se naći na slici \ref{Performance2}, matrice konfuzije na trening i test skupu na slici \ref{CM2}, a \textit{precision}, \textit{recall} i \textit{F1 score} za naše klase u tabeli \ref{Data2}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{ |c|c|c|c| }
+        \hline
+        Klasa & \textit{Precision} & \textit{Recall} & \textit{F1 score} \\
+        \hline
+        Pop & 0.2000 & 0.1628 & 0.1795 \\
+        \hline
+        Rap & 0.8022 & 0.6969 & 0.7458 \\
+        \hline
+        RnB & 0.6171 & 0.7558 & 0.6794 \\
+        \hline
+    \end{tabular}
+    \caption{Tabela \textit{precision}, \textit{recall} i \textit{F1 score} za pojedinačne klase optimalne mreže u drugom zadatku.}
+    \label{Data2}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.75\textwidth]{Z2_Performance}
+    \caption{Kriva performanse optimalne mreže u drugom zadatku.}
+    \label{Performance2}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.75\textwidth]{Z2_CM_Training}
+    \includesvg[width=0.75\textwidth]{Z2_CM_Test}
+    \caption{Matrice konfuzije na trening i test skupu optimalne mreže u drugom zadatku.}
+    \label{CM2}
+\end{figure}
 
 \end{document}
