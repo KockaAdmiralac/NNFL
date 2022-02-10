@@ -6,7 +6,7 @@ input = readmatrix('data/Genres.csv');
 input = input(:, 1:11)';
 output = findgroups(readtable('data/Genres.csv').genre)';
 
-%%% Iscrtavanje izlaznih klasa
+%% Iscrtavanje izlaznih klasa
 figure
 histogram(output)
 title('Žanrovi')

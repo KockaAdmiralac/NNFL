@@ -1,0 +1,45 @@
+[System]
+Name='kt200fis'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=5
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='e'
+Range=[-4 4]
+NumMFs=3
+MF1='neg':'trimf',[-5 -4 0]
+MF2='nula':'trimf',[-1 0 1]
+MF3='pos':'trimf',[0 4 5]
+
+[Input2]
+Name='de'
+Range=[-0.1 0.1]
+NumMFs=3
+MF1='neg':'trimf',[-0.1834 -0.1 0]
+MF2='nula':'trimf',[-0.025 0 0.025]
+MF3='pos':'trimf',[0 0.1013 0.25]
+
+[Output1]
+Name='upravljanje'
+Range=[-0.012 0.012]
+NumMFs=5
+MF1='malo':'trapmf',[-0.0168 -0.012 -0.0096 -0.0024]
+MF2='srednje':'trimf',[-0.0024 0 0.0024]
+MF3='veliko':'trapmf',[0.00235 0.009547 0.01195 0.024]
+MF4='srm':'trimf',[-0.0048 -0.0024 0]
+MF5='srv':'trimf',[0 0.0024 0.0048]
+
+[Rules]
+1 0, 1 (1) : 1
+3 0, 3 (1) : 1
+2 2, 2 (1) : 1
+2 3, 5 (1) : 1
+2 1, 4 (1) : 1
