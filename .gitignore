@@ -37,6 +37,7 @@ svg-inkscape
 *.fls
 *.log
 *.synctex.gz
+flproj.pdf
 nmproj.pdf
 
 
